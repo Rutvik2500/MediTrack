@@ -1,0 +1,7 @@
+Group\Meditrack\MeditrackApplication.class
+Group\Meditrack\controller\MedicationController.class
+Group\Meditrack\repository\UserRepository.class
+Group\Meditrack\model\Medication.class
+Group\Meditrack\model\User.class
+Group\Meditrack\repository\MedicationRepository.class
+Group\Meditrack\controller\AuthController.class

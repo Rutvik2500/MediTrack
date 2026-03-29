@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack - Login</title>
+    <style>
+        :root {
+            --primary-color: #008080;
+            --background-color: #f7fafc;
+            --card-background: #ffffff;
+            --text-main: #1a202c;
+            --text-secondary: #4a5568;
+            --border-color: #e2e8f0;
+            --input-background: #edf2f7;
+            --input-border: #cbd5e0;
+            --btn-hover: #006666;
+        }
+
+        [data-theme="dark"] {
+            --background-color: #1a202c;
+            --card-background: #2d3748;
+            --text-main: #f7fafc;
+            --text-secondary: #a0aec0;
+            --border-color: #4a5568;
+            --input-background: #1a202c;
+            --input-border: #4a5568;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-box {
+            background-color: var(--primary-color);
+            border-radius: 12px;
+            padding: 10px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 5px 0 0 0;
+        }
+
+        .login-card {
+            background-color: var(--card-background);
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            padding: 40px;
+            box-sizing: border-box;
+            transition: background-color 0.3s;
+        }
+
+        .login-card h2 {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 0 10px 0;
+        }
+
+        .login-card .subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 0 0 30px 0;
+        }
+
+        .tabs-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .login-tab {
+            flex: 1;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            background-color: var(--card-background);
+        }
+
+        .login-tab:hover {
+            border-color: var(--primary-color);
+        }
+
+        .login-tab.active {
+            border-color: var(--primary-color);
+            border-width: 2px;
+        }
+
+        .tab-icon {
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+
+        .tab-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .login-tab.active .tab-text {
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .input-relative {
+            position: relative;
+        }
+
+        .input-relative input {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: var(--input-background);
+            color: var(--text-main);
+            transition: border-color 0.2s, background-color 0.3s, color 0.3s;
+        }
+
+        .input-relative input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: var(--card-background);
+        }
+
+        .left-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .eye-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .form-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+        }
+
+        .forgot-password {
+            font-size: 14px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--btn-hover);
+        }
+
+        .signup-text {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 30px;
+        }
+
+        .signup-text a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-text a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <button onclick="toggleTheme()" class="theme-toggle">🌓 Theme</button>
+
+    <div class="login-container">
+        
+        <div class="header">
+            <div class="logo-box">
+                <svg width="24" height="24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="25" y="10" width="50" height="80" rx="25" stroke="#ffffff" stroke-width="8"/>
+                    <path d="M25 50 h50 v15 a25 25 0 0 1 -50 0 z" fill="#e6f2f2" stroke="#ffffff" stroke-width="8"/>
+                </svg>
+            </div>
+            <h1>MediTrack</h1>
+            <p>Your Personal Medication Reminder</p>
+        </div>
+
+        <div class="login-card">
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Sign in to access your medication schedule</p>
+
+            <form id="authForm">
+                <div class="tabs-label">Login As</div>
+                <div class="tabs">
+                    <div class="login-tab active" id="patientTab">
+                        <svg class="tab-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="8" r="4" stroke="#008080" stroke-width="2"/>
+                            <path d="M4 20C4 16.6863 6.68629 14 10 14H14C17.3137 14 20 16.6863 20 20" stroke="#008080" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span class="tab-text">Patient</span>
+                    </div>
+                    <div class="login-tab" id="doctorTab">
+                        <svg class="tab-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="6" r="4" stroke="#4a5568" stroke-width="2"/>
+                            <path d="M12 11V21" stroke="#4a5568" stroke-width="2"/>
+                            <path d="M8 13H16" stroke="#4a5568" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M5 20C5 17.2386 7.23858 15 10 15H14C16.7614 15 19 17.2386 19 20" stroke="#4a5568" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span class="tab-text">Doctor</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <div class="input-relative">
+                        <svg class="left-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 8L10.89 13.26C11.56 13.71 12.44 13.71 13.11 13.26L21 8" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <rect x="3" y="5" width="18" height="14" rx="2" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <input type="email" id="emailInput" placeholder="your@email.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div class="input-relative">
+                        <svg class="left-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="#cbd5e0" stroke-width="2"/>
+                            <path d="M7 11V7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7V11" stroke="#cbd5e0" stroke-width="2"/>
+                        </svg>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                        <svg class="eye-toggle" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="12" r="3" stroke="#cbd5e0" stroke-width="2"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="form-controls">
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberCheck">
+                        Remember me
+                    </label>
+                    
+                </div>
+
+                <button type="submit" class="btn-submit">Sign In as Patient</button>
+            </form>
+
+            <p class="signup-text">
+                Don't have an account? <a href="signup.html">Sign Up</a>
+            </p>
+        </div>
+    </div>
+
+		<script>
+			if (localStorage.getItem('theme') === 'dark') {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+
+			function toggleTheme() {
+				const currentTheme = document.documentElement.getAttribute('data-theme');
+				if (currentTheme === 'dark') {
+					document.documentElement.removeAttribute('data-theme');
+					localStorage.setItem('theme', 'light');
+				} else {
+					document.documentElement.setAttribute('data-theme', 'dark');
+					localStorage.setItem('theme', 'dark');
+				}
+			}
+
+			const patientTab = document.getElementById('patientTab');
+			const doctorTab = document.getElementById('doctorTab');
+			const submitBtn = document.querySelector('.btn-submit');
+			const authForm = document.getElementById('authForm');
+			const emailInput = document.getElementById('emailInput');
+			const passwordInput = document.getElementById('password');
+			const rememberCheck = document.getElementById('rememberCheck');
+
+			if (localStorage.getItem('savedEmail')) {
+				emailInput.value = localStorage.getItem('savedEmail');
+				rememberCheck.checked = true;
+			}
+
+			patientTab.addEventListener('click', () => {
+				patientTab.classList.add('active');
+				doctorTab.classList.remove('active');
+				submitBtn.textContent = "Sign In as Patient";
+			});
+
+			doctorTab.addEventListener('click', () => {
+				doctorTab.classList.add('active');
+				patientTab.classList.remove('active');
+				submitBtn.textContent = "Sign In as Doctor";
+			});
+
+			authForm.addEventListener('submit', async (e) => {
+				e.preventDefault();
+
+				const credentials = {
+					email: emailInput.value,
+					password: passwordInput.value
+				};
+
+				try {
+					const response = await fetch('http://localhost:8080/api/auth/login', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(credentials)
+					});
+
+					if (response.ok) {
+						const user = await response.json();
+						
+						if (rememberCheck.checked) {
+							localStorage.setItem('savedEmail', emailInput.value);
+						} else {
+							localStorage.removeItem('savedEmail');
+						}
+
+						localStorage.setItem('loggedInUser', JSON.stringify(user));
+
+						if (user.role === 'PATIENT' && patientTab.classList.contains('active')) {
+							window.location.href = 'patient.html';
+						} else if (user.role === 'DOCTOR' && doctorTab.classList.contains('active')) {
+							window.location.href = 'doctor.html';
+						} else {
+							alert("Unauthorized: Please select the correct login role.");
+						}
+					} else {
+						alert("Account not found or invalid credentials. Please create an account if you haven't already.");
+					}
+				} catch (error) {
+					console.error("Error:", error);
+					alert("Server is offline. Make sure Spring Boot is running.");
+				}
+			});
+
+			const eyeIcon = document.querySelector('.eye-toggle');
+			eyeIcon.addEventListener('click', () => {
+				const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+				passwordInput.setAttribute('type', type);
+			});
+		</script>
+</body>
+</html>

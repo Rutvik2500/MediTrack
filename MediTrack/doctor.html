@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediTrack - Doctor Portal</title>
+    <style>
+        :root {
+            --primary: #008080;
+            --bg-color: #f7fafc;
+            --card-bg: #ffffff;
+            --text-main: #1a202c;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+            --success-light: #dcfce7;
+            --success-dark: #166534;
+            --warning-light: #fef08a;
+            --warning-dark: #854d0e;
+            --item-bg: #f8fafc;
+            --icon-bg: #e6f2f2;
+            --slider-bg: #cbd5e0;
+            --active-card-bg: #f0fdfa;
+            --hover-card-border: #cbd5e0;
+            --btn-delete-hover: #fee2e2;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a202c;
+            --card-bg: #2d3748;
+            --text-main: #f7fafc;
+            --text-muted: #a0aec0;
+            --border: #4a5568;
+            --success-light: #22543d;
+            --success-dark: #4ade80;
+            --warning-light: #742a2a;
+            --warning-dark: #fde047;
+            --item-bg: #1a202c;
+            --icon-bg: #234e52;
+            --slider-bg: #4a5568;
+            --active-card-bg: #234e52;
+            --hover-card-border: #718096;
+            --btn-delete-hover: #742a2a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .top-header {
+            background: var(--card-bg);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-box {
+            background-color: var(--primary);
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+        }
+
+        .brand-text h1 { margin: 0; font-size: 20px; color: var(--text-main); }
+        .brand-text p { margin: 0; font-size: 12px; color: var(--text-muted); }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 30px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            padding-bottom: 10px;
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .portal-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .sidebar-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .sidebar-card h2 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 10px 10px 35px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+            background: var(--card-bg);
+            color: var(--text-main);
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .patient-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .patient-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--card-bg);
+        }
+
+        .patient-card:hover {
+            border-color: var(--hover-card-border);
+        }
+
+        .patient-card.active {
+            border-color: var(--primary);
+            background: var(--active-card-bg);
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .patient-info {
+            flex: 1;
+        }
+
+        .patient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .patient-header h3 {
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-green { background: var(--success-light); color: var(--success-dark); }
+
+        .patient-email {
+            margin: 0 0 8px 0;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .empty-state {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 60px 20px;
+            border: 1px solid var(--border);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .empty-state-icon {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .empty-state h2 { margin: 0 0 10px 0; font-size: 20px; }
+        .empty-state p { margin: 0; color: var(--text-muted); font-size: 14px; }
+
+        .patient-details-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .large-avatar { width: 70px; height: 70px; font-size: 30px; }
+        .details-info h2 { margin: 0 0 10px 0; font-size: 22px; }
+
+        .details-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .meds-section {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .meds-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .meds-header h3 { margin: 0; font-size: 18px; }
+
+        .med-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background: var(--item-bg);
+            justify-content: space-between;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .med-left { display: flex; align-items: center; gap: 15px; }
+
+        .med-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--icon-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .med-text h4 { margin: 0 0 4px 0; font-size: 15px; color: var(--text-main); }
+        .med-text p { margin: 0; font-size: 12px; color: var(--text-muted); }
+        .med-meta { display: flex; align-items: center; gap: 10px; margin-top: 6px; font-size: 12px; color: var(--text-muted); }
+        .freq-badge { background: var(--border); padding: 2px 8px; border-radius: 4px; color: var(--text-main); }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--danger);
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .btn-delete:hover { background: var(--btn-delete-hover); }
+
+        .profile-section { display: none; flex-direction: column; gap: 20px; }
+
+        .profile-header-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar-circle {
+            width: 80px; height: 80px; border-radius: 50%; background: var(--primary);
+            color: white; font-size: 28px; font-weight: bold; display: flex;
+            justify-content: center; align-items: center;
+        }
+
+        .profile-header-info h2 { margin: 0 0 5px 0; font-size: 24px; }
+        .profile-header-info p { margin: 0 0 15px 0; color: var(--text-muted); font-size: 14px; }
+
+        .btn-edit {
+            background: var(--primary); color: white; border: none; padding: 8px 16px;
+            border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px;
+        }
+
+        .profile-details-card {
+            background: var(--card-bg); border-radius: 10px; padding: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .profile-details-card h3 { margin-top: 0; margin-bottom: 20px; font-size: 16px; }
+
+        .info-row {
+            background: var(--item-bg); padding: 15px; border-radius: 8px;
+            margin-bottom: 10px; display: flex; align-items: center; gap: 15px;
+        }
+        .info-row-icon { color: var(--primary); display: flex; }
+        .info-row-text p { margin: 0; font-size: 12px; color: var(--text-muted); }
+        .info-row-text h4 { margin: 2px 0 0 0; font-size: 15px; font-weight: 500; }
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; }
+
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--slider-bg); transition: .3s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px;
+            bottom: 3px; background-color: white; transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); justify-content: center; align-items: center; z-index: 1000;
+        }
+
+        .modal-box {
+            background: var(--card-bg); border-radius: 12px; width: 100%; max-width: 400px;
+            padding: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h2 { margin: 0; font-size: 20px; }
+        .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+        .input-field {
+            width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px;
+            font-size: 14px; box-sizing: border-box; background: var(--card-bg); color: var(--text-main);
+        }
+        .input-field:focus { outline: none; border-color: var(--primary); }
+        
+        .modal-actions { display: flex; gap: 10px; margin-top: 25px; }
+        .btn-cancel { flex: 1; padding: 12px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn-confirm { flex: 1; padding: 12px; border: none; background: var(--primary); color: white; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 5px; }
+        
+        .loading-spinner { text-align: center; padding: 20px; color: var(--text-muted); font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <header class="top-header">
+        <div class="logo-section">
+            <div class="logo-box">
+                <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="25" y="10" width="50" height="80" rx="25" stroke="#ffffff" stroke-width="8"/>
+                    <path d="M25 50 h50 v15 a25 25 0 0 1 -50 0 z" fill="#ffffff"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <h1>MediTrack</h1>
+                <p>Doctor Portal</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="btn" onclick="logout()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                Logout
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="nav-tabs">
+            <div class="tab active" id="tab-patients" onclick="switchTab('patients')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Patients
+            </div>
+            <div class="tab" id="tab-profile" onclick="switchTab('profile')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Profile
+            </div>
+        </div>
+
+        <div id="view-patients" class="portal-layout">
+            
+            <aside class="sidebar-card">
+                <h2>My Patients</h2>
+                <div class="search-box">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="searchInput" placeholder="Search patients..." oninput="filterPatients()">
+                </div>
+
+                <div class="patient-list" id="sidebarPatientList">
+                    <div class="loading-spinner">Loading patients from database...</div>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                
+                <div id="view-empty" class="empty-state">
+                    <svg class="empty-state-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <h2>Select a Patient</h2>
+                    <p>Choose a patient from the list to view and manage their medications</p>
+                </div>
+
+                <div id="view-active" style="display: none; flex-direction: column; gap: 20px;">
+                    <div class="patient-details-card">
+                        <div class="avatar large-avatar" id="activePatientAvatar"></div>
+                        <div class="details-info">
+                            <h2 id="activePatientName">Loading...</h2>
+                            <div class="details-grid">
+                                <div class="detail-row">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                                    <span id="activePatientEmail">...</span>
+                                </div>
+                                <div class="detail-row">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    Patient Record
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="meds-section">
+                        <div class="meds-header">
+                            <h3>Prescribed Medications</h3>
+                            <button class="btn btn-primary" onclick="openModal()">+ Add Medication</button>
+                        </div>
+
+                        <div id="activePatientMedsList">
+                            </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+        <div id="view-profile" class="profile-section">
+            <div class="profile-header-card">
+                <div class="avatar-circle" id="profileAvatar">D</div>
+                <div class="profile-header-info">
+                    <h2 id="profileName">Loading...</h2>
+                    <p id="profileEmailHeader">...</p>
+                    <button class="btn-edit">Edit Profile</button>
+                </div>
+            </div>
+
+            <div class="profile-details-card">
+                <h3>App Settings</h3>
+                <div class="info-row toggle-row">
+                    <div class="info-row-text">
+                        <h4>Dark Theme</h4>
+                        <p>Switch between light and dark mode</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="themeToggleInput" onchange="toggleTheme()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="profile-details-card">
+                <h3>Account Information</h3>
+                
+                <div class="info-row">
+                    <div class="info-row-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <div class="info-row-text">
+                        <p>Full Name</p>
+                        <h4 id="profileFullNameText">Loading...</h4>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-row-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </div>
+                    <div class="info-row-text">
+                        <p>Email Address</p>
+                        <h4 id="profileEmailText">...</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Add Medication</h2>
+                <button class="modal-close" onclick="closeModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            
+            <div class="input-group">
+                <label>Medication Name</label>
+                <input type="text" id="medName" class="input-field" placeholder="e.g., Aspirin">
+            </div>
+            
+            <div class="input-group">
+                <label>Dosage</label>
+                <input type="text" id="medDosage" class="input-field" placeholder="e.g., 500mg">
+            </div>
+            
+            <div class="input-group">
+                <label>Time</label>
+                <input type="text" id="medTime" class="input-field" placeholder="--:--">
+            </div>
+            
+            <div class="input-group">
+                <label>Frequency</label>
+                <select id="medFreq" class="input-field">
+                    <option>Daily</option>
+                    <option>Twice Daily</option>
+                    <option>Weekly</option>
+                </select>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-confirm" onclick="submitMedication()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add Medication
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Authentication & Setup
+        const user = JSON.parse(localStorage.getItem('loggedInUser'));
+        if (!user || user.role !== 'DOCTOR') window.location.href = 'login.html';
+
+        // Load Doctor Profile Info
+        document.getElementById('profileAvatar').textContent = user.fullName.charAt(0).toUpperCase();
+        document.getElementById('profileName').textContent = user.fullName;
+        document.getElementById('profileEmailHeader').textContent = user.email;
+        document.getElementById('profileFullNameText').textContent = user.fullName;
+        document.getElementById('profileEmailText').textContent = user.email;
+
+        // Theme Initialization
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('themeToggleInput').checked = true;
+        }
+
+        // Global State Variables
+        let allPatients = [];
+        let currentSelectedPatientId = null;
+
+        // 2. Fetch Data from Database
+        async function fetchPatients() {
+            try {
+                const response = await fetch('http://localhost:8080/api/doctor/patients');
+                if (response.ok) {
+                    allPatients = await response.json();
+                    renderPatientList(allPatients);
+                } else {
+                    document.getElementById('sidebarPatientList').innerHTML = '<div class="loading-spinner">Failed to load patients.</div>';
+                }
+            } catch (error) {
+                console.error("Connection error:", error);
+                document.getElementById('sidebarPatientList').innerHTML = '<div class="loading-spinner">Server Offline.</div>';
+            }
+        }
+
+        // 3. Render the Sidebar List
+        function renderPatientList(patients) {
+            const listContainer = document.getElementById('sidebarPatientList');
+            listContainer.innerHTML = '';
+
+            if (patients.length === 0) {
+                listContainer.innerHTML = '<div class="loading-spinner">No patients found.</div>';
+                return;
+            }
+
+            patients.forEach(patient => {
+                // Ensure card remains active if it is the currently selected one
+                const isActive = patient.id === currentSelectedPatientId ? 'active' : '';
+                
+                const cardHtml = `
+                <div class="patient-card ${isActive}" id="card-patient-${patient.id}" onclick="selectPatient(${patient.id}, '${patient.fullName}', '${patient.email}')">
+                    <div class="avatar">${patient.fullName.charAt(0).toUpperCase()}</div>
+                    <div class="patient-info">
+                        <div class="patient-header">
+                            <h3>${patient.fullName}</h3>
+                            <span class="badge badge-green">Active</span>
+                        </div>
+                        <p class="patient-email">${patient.email}</p>
+                    </div>
+                </div>`;
+                listContainer.innerHTML += cardHtml;
+            });
+        }
+
+        // 4. Handle Patient Selection
+        async function selectPatient(id, name, email) {
+            currentSelectedPatientId = id;
+
+            // Manage active classes visually
+            document.querySelectorAll('.patient-card').forEach(card => card.classList.remove('active'));
+            const selectedCard = document.getElementById(`card-patient-${id}`);
+            if(selectedCard) selectedCard.classList.add('active');
+            
+            // Switch from empty state to active state
+            document.getElementById('view-empty').style.display = 'none';
+            document.getElementById('view-active').style.display = 'flex';
+
+            // Populate Main Profile Header
+            document.getElementById('activePatientAvatar').textContent = name.charAt(0).toUpperCase();
+            document.getElementById('activePatientName').textContent = name;
+            document.getElementById('activePatientEmail').textContent = email;
+
+            // Fetch this specific patient's medications
+            loadMedications(id);
+        }
+
+        // 5. Load and Render Medications
+        async function loadMedications(patientId) {
+            const medsContainer = document.getElementById('activePatientMedsList');
+            medsContainer.innerHTML = '<div class="loading-spinner">Loading medications...</div>';
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/medications/user/${patientId}`);
+                const medications = await response.json();
+
+                if (medications.length === 0) {
+                    medsContainer.innerHTML = '<div class="loading-spinner" style="font-style: italic;">No medications prescribed yet.</div>';
+                    return;
+                }
+
+                medsContainer.innerHTML = '';
+                medications.forEach(med => {
+                    medsContainer.innerHTML += `
+                    <div class="med-item" id="med-${med.id}">
+                        <div class="med-left">
+                            <div class="med-icon">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M10.5 20.5L3.5 13.5C2.11929 12.1193 2.11929 9.88071 3.5 8.5L8.5 3.5C9.88071 2.11929 12.1193 2.11929 13.5 3.5L20.5 10.5C21.8807 11.8807 21.8807 14.1193 20.5 15.5L15.5 20.5C14.1193 21.8807 11.8807 21.8807 10.5 20.5Z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg>
+                            </div>
+                            <div class="med-text">
+                                <h4>${med.medicationName}</h4>
+                                <p>${med.dosage}</p>
+                                <div class="med-meta">
+                                    <span>🕒 ${med.time}</span>
+                                    <span class="freq-badge">${med.frequency}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-delete" onclick="removeMedicationUI(${med.id})">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                    </div>`;
+                });
+            } catch (error) {
+                console.error("Error loading meds:", error);
+                medsContainer.innerHTML = '<div class="loading-spinner">Failed to load medications.</div>';
+            }
+        }
+
+        // 6. Submit New Medication
+        async function submitMedication() {
+            if (!currentSelectedPatientId) return;
+
+            const newMed = {
+                medicationName: document.getElementById('medName').value,
+                dosage: document.getElementById('medDosage').value,
+                time: document.getElementById('medTime').value,
+                frequency: document.getElementById('medFreq').value
+            };
+
+            if(!newMed.medicationName || !newMed.dosage || !newMed.time) {
+                alert("Please fill all fields.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/medications/add/${currentSelectedPatientId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newMed)
+                });
+
+                if(response.ok) {
+                    closeModal();
+                    loadMedications(currentSelectedPatientId); // Refresh realtime
+                    document.getElementById('medName').value = '';
+                    document.getElementById('medDosage').value = '';
+                    document.getElementById('medTime').value = '';
+                } else {
+                    alert("Failed to add medication.");
+                }
+            } catch (error) {
+                console.error("Connection error:", error);
+            }
+        }
+
+        // Basic UI removal for delete button (Note: To permanently delete from DB, a backend DELETE endpoint is required)
+        function removeMedicationUI(medId) {
+            if(confirm("Remove this medication?")) {
+                document.getElementById(`med-${medId}`).style.display = 'none';
+            }
+        }
+
+        // Client-side Search Filter
+        function filterPatients() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allPatients.filter(p => p.fullName.toLowerCase().includes(query) || p.email.toLowerCase().includes(query));
+            renderPatientList(filtered);
+        }
+
+        // App Navigation & Modal Logic
+        function switchTab(tabId) {
+            document.getElementById('tab-patients').classList.remove('active');
+            document.getElementById('tab-profile').classList.remove('active');
+            document.getElementById('view-patients').style.display = 'none';
+            document.getElementById('view-profile').style.display = 'none';
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            if (tabId === 'patients') {
+                document.getElementById('view-patients').style.display = 'grid';
+            } else {
+                document.getElementById('view-profile').style.display = 'flex';
+                document.getElementById('themeToggleInput').checked = (document.documentElement.getAttribute('data-theme') === 'dark');
+            }
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.getAttribute('data-theme') === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function openModal() { document.getElementById('addModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('addModal').style.display = 'none'; }
+        function logout() { localStorage.removeItem('loggedInUser'); window.location.href = 'login.html'; }
+
+        // Initialize App
+        fetchPatients();
+    </script>
+</body>
+</html>
